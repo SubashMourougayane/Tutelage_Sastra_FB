@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1037223641679",
+    "firebase_url": "https://tutelage-d619f.firebaseio.com",
+    "project_id": "tutelage-d619f",
+    "storage_bucket": "tutelage-d619f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037223641679:android:4ec06bc368f53c56",
+        "android_client_info": {
+          "package_name": "com.example.nadus.tutelage_unisys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037223641679-9slcmd59pbnldfak2igl0359epsa6rkl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1niM6MEDQPlyc8lCcLfvcwa2j-IsPYMk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

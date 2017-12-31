@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerindiv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/drag_handle" />
+
+            <com.hlab.fabrevealmenu.view.FABRevealMenu
+                android:id="@+id/fabMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:animateItems="true"
+                app:menuBackgroundColor="@color/colorGray"
+                app:menuDirection="up"
+                app:menuRes="@menu/menu_fab"
+                app:menuSize="normal"
+                app:menuTitleTextColor="@color/colorWhite"
+                app:showTitle="true">
+
+            </com.hlab.fabrevealmenu.view.FABRevealMenu>
+        </RelativeLayout>
+
+
+        <include layout="@layout/text_bottom" />
+
+        <include layout="@layout/image_bottom" />
+
+        <include layout="@layout/audio_bottom" />
+
+        <include layout="@layout/video_bottom" />
+
+        <include layout="@layout/files_bottom" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
+</RelativeLayout>

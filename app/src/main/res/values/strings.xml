@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Tutelage</string>
+    <string name="FullName">Full Name</string>
+    <string name="EmailAddress">Email Address</string>
+    <string name="DOB">Date Of Birth</string>
+    <string name="ContactNumber">Contact Number</string>
+    <string name="City">City</string>
+    <string name="pursuing">What are you pursuing</string>
+    <string name="call_text">Quality is important to us and your Teachers will get in touch with you. Please check your contact number once again and edit in case you have changed your number.</string>
+    <string name="pic_text">Show us how you look. The more information you upload the more completed will be your profile.</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="ClassName">Class Name</string>
+    <string name="Date">Date Of Test</string>
+    <string name="Duration">Duration</string>
+    <string name="TestName">Test Name</string>
+    <string name="TestQuestions">Test Questions</string>
+</resources>
