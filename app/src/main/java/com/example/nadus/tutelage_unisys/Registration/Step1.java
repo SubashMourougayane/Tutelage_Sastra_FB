@@ -19,9 +19,11 @@ import android.widget.EditText;
 
 import com.example.nadus.tutelage_unisys.DataModels.Universities;
 import com.example.nadus.tutelage_unisys.FB_Downloads.Retrieve;
+import com.example.nadus.tutelage_unisys.Home.HomeActivity;
 import com.example.nadus.tutelage_unisys.R;
-import com.example.nadus.tutelage_unisys.Splash.Splash;
+import com.example.nadus.tutelage_unisys.Splash.Splash_New;
 import com.firebase.client.FirebaseError;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -43,8 +45,8 @@ import me.anwarshahriar.calligrapher.Calligrapher;
 public class Step1 extends AppCompatActivity {
     Calligrapher calligrapher;
     FloatingActionButton next1;
-    EditText Username,Email,DOB,Contact,Passkey;
-    String uname,umail,udob,ucontact,upass,uinstitution;
+    EditText Username,Email,DOB,Contact,Passkey,Location;
+    String uname,umail,udob,ucontact,upass,uinstitution,ulocation,passkey;
     ProgressDialog progressDialog;
 
     static String UnivName;
@@ -52,7 +54,7 @@ public class Step1 extends AppCompatActivity {
     String ucat;
     NoInternetDialog noInternetDialog;
     Calendar myCalendar;
-
+    FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
 
     @Override
@@ -64,6 +66,13 @@ public class Step1 extends AppCompatActivity {
 
         noInternetDialog = new NoInternetDialog.Builder(Step1.this).setBgGradientStart(getResources().getColor(R.color.colorGray)).setBgGradientCenter(getResources().getColor(R.color.colorGray)).setBgGradientEnd(getResources().getColor(R.color.colorGrayDark)).build();
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        if(firebaseAuth.getCurrentUser()!=null)
+        {
+            startActivity(new Intent(Step1.this,HomeActivity.class));
+            Step1.this.finish();
+        }
+
         Bundle extras = getIntent().getExtras();
         uname = extras.getString("Uname");
         umail = extras.getString("UEmail");
@@ -74,6 +83,7 @@ public class Step1 extends AppCompatActivity {
         DOB = (EditText)findViewById(R.id.dob);
         Contact = (EditText)findViewById(R.id.contact);
         Passkey = (EditText)findViewById(R.id.passkey);
+        Location = (EditText) findViewById(R.id.location);
         Username.setText(uname);
         Email.setText(umail);
 
@@ -86,13 +96,16 @@ public class Step1 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 progressDialog.setMessage("Processing Information...");
+                progressDialog.setCancelable(false);
                 progressDialog.show();
                 uname=Username.getText().toString().trim();
                 umail=Email.getText().toString().trim();
                 udob=DOB.getText().toString().trim();
                 ucontact=Contact.getText().toString().trim();
                 upass=Passkey.getText().toString().trim();
+                passkey=upass;
                 categ = upass.split("_");
+                ulocation = Location.getText().toString().trim();
                 upass = categ[0]+"_"+categ[1];
                 if(categ[2].equals("T"))
                 {
@@ -161,12 +174,14 @@ public class Step1 extends AppCompatActivity {
                             UnivName = postsnapshot.getValue().toString();
                             System.out.println("LOL"+UnivName);
                             Intent i = new Intent(Step1.this, Step2.class);
-                            i.putExtra("ColgName",UnivName);
+                            i.putExtra("Univname",UnivName);
                             i.putExtra("Ucat",ucat);
                             i.putExtra("Uname",uname);
                             i.putExtra("Umail",umail);
                             i.putExtra("Ucontact",ucontact);
                             i.putExtra("Udob",udob);
+                            i.putExtra("Upass",passkey);
+                            i.putExtra("Ulocation",ulocation);
                             startActivity(i);
                             break;
                         }
@@ -197,6 +212,9 @@ public class Step1 extends AppCompatActivity {
         noInternetDialog.onDestroy();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
+    }
 
 }

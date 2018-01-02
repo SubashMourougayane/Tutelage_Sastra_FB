@@ -17,4 +17,5 @@
     <string name="Duration">Duration</string>
     <string name="TestName">Test Name</string>
     <string name="TestQuestions">Test Questions</string>
+    <string name="Location">Location</string>
 </resources>
