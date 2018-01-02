@@ -11,6 +11,7 @@ import com.example.nadus.tutelage_unisys.DataModels.UserCreds;
 import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -25,20 +26,20 @@ public class DataBlob
     private static StorageReference storageReference;
     private static Firebase fb_db;
     public static int userCreateFlag=0;
-    public static int CreateUser(Uri filePath, String FBPath,UserCreds userCreds)
+    public static int CreateUser(Uri filePath, DatabaseReference databaseReference, UserCreds userCreds)
     {
         if(filePath != null)
         {
-            fb_db = new Firebase("https://tutelage-d619f.firebaseio.com/").child(FBPath);
+            //fb_db = new Firebase("https://tutelage-d619f.firebaseio.com/").child(FBPath);
             storage = FirebaseStorage.getInstance();
             storageReference = storage.getReference();
-            StorageReference ref = storageReference.child(FBPath+ UserCreds.Umail);
+            StorageReference ref = storageReference.child(databaseReference+ UserCreds.Umail);
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            fb_db.setValue(userCreds);
-                            userCreateFlag = 1;
+                            databaseReference.setValue(userCreds);
+                           // userCreateFlag = 1;
 //                            return Boolean.TRUE;
                         }
                     })

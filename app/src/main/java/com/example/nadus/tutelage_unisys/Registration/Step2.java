@@ -1,5 +1,6 @@
 package com.example.nadus.tutelage_unisys.Registration;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -19,12 +21,15 @@ import com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob;
 import com.example.nadus.tutelage_unisys.Home.HomeActivity;
 import com.example.nadus.tutelage_unisys.R;
 import com.example.nadus.tutelage_unisys.Utils.ImageFilePath;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
 
+import am.appwise.components.ni.NoInternetDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 
@@ -43,23 +48,28 @@ public class Step2 extends AppCompatActivity {
     FloatingActionButton next2;
     FloatingActionButton profpic;
     CircleImageView prof_pic;
-    String ColgName,UCat;
+    String ColgName,UCat,Uname,Umail,Ucontact,Udob;
+    NoInternetDialog noInternetDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step2);
-        pref = getSharedPreferences("Tutelage",0);
-        editor = pref.edit();
+
+        noInternetDialog = new NoInternetDialog.Builder(Step2.this).setBgGradientStart(getResources().getColor(R.color.colorGray)).setBgGradientCenter(getResources().getColor(R.color.colorGray)).setBgGradientEnd(getResources().getColor(R.color.colorGrayDark)).build();
 
         Bundle extras = getIntent().getExtras();
-         ColgName = extras.getString("ColgName");
+        ColgName = extras.getString("ColgName");
         UCat = extras.getString("Ucat");
+        Uname = extras.getString("Uname");
+        Umail = extras.getString("Umail");
+        Ucontact = extras.getString("Ucontact");
+        Udob = extras.getString("Udob");
+
         profpic = (FloatingActionButton)findViewById(R.id.profpic);
         prof_pic = (CircleImageView)findViewById(R.id.profile_image);
         calligrapher = new Calligrapher(this);
         calligrapher.setFont(Step2.this,"GlacialIndifference-Regular.ttf",true);
-        System.out.println("IN NEXT "+pref.getString("UInstitution",""));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -72,10 +82,22 @@ public class Step2 extends AppCompatActivity {
         next2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (DataBlob.userCreateFlag==1) {
-                    editor.putBoolean("isLogin",Boolean.TRUE);
-                    startActivity(new Intent(Step2.this, HomeActivity.class));
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(Step2.this);
+                builder.setTitle("Confirmation");
+                builder.setMessage("Are you sure all the details are correct?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(Step2.this, HomeActivity.class));
+                    }
+                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
         profpic.setOnClickListener(new View.OnClickListener() {
@@ -103,23 +125,26 @@ public class Step2 extends AppCompatActivity {
                 e.printStackTrace();
             }
             // Log.d(TAG, String.valueOf(bitmap));
-              prof_pic.setImageBitmap(bitmap);
+            prof_pic.setImageBitmap(bitmap);
             UserCreds userCreds = new UserCreds();
-            userCreds.setUname(pref.getString("Uname",""));
-            userCreds.setUmail(pref.getString("UEmail",""));
-            userCreds.setUDOB(pref.getString("Udob",""));
+            userCreds.setUname(Uname);
+            userCreds.setUmail(Umail);
+            userCreds.setUDOB(Udob);
             userCreds.setUinstitution(ColgName);
-            userCreds.setUcontact(pref.getString("Ucontact",""));
-//                UserCreds.Uname = pref.getString("Uname","");
-//                UserCreds.Umail = pref.getString("Umail","");
-//                UserCreds.UDOB = pref.getString("Udob","");
-//                UserCreds.Uinstitution = ColgName;
-            String mailsplit = UserCreds.Umail.replace(".com","");
-            String path = "Users/"+pref.getString("UInstitution","")+"/UserCreds/"+UCat+"/"+mailsplit+"/";
-            System.out.println("PATH PASSED IS "+path);
-            CreateUser(uri,path,userCreds);
+            userCreds.setUcontact(Ucontact);
+            System.out.println("Umail is "+userCreds.getUmail());
+            String mailsplit = UserCreds.Umail.replace(".","_");
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(Step1.UnivName).child("UserCreds").child(UCat).child(mailsplit);
+            System.out.println("PATH PASSED IS "+databaseReference);
+            CreateUser(uri,databaseReference,userCreds);
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        noInternetDialog.onDestroy();
     }
 
     @Override

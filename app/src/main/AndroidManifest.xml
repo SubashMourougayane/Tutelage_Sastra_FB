@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_logo"
         android:supportsRtl="true">
         <activity
-            android:name=".Splash.Splash"
+            android:name=".Splash.Splash_New"
             android:theme="@style/AppTheme.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
