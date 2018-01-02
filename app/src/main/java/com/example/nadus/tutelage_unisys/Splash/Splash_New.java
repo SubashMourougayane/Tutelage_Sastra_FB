@@ -194,4 +194,9 @@ public class Splash_New extends AppCompatActivity
         super.onDestroy();
         noInternetDialog.onDestroy();
     }
+
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
+    }
 }

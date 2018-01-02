@@ -1,5 +1,7 @@
 package com.example.nadus.tutelage_unisys.Registration;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,20 +15,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
-
 
 import com.example.nadus.tutelage_unisys.DataModels.UserCreds;
-import com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob;
 import com.example.nadus.tutelage_unisys.Home.HomeActivity;
 import com.example.nadus.tutelage_unisys.R;
-import com.example.nadus.tutelage_unisys.Utils.ImageFilePath;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
 import java.io.IOException;
 
 import am.appwise.components.ni.NoInternetDialog;
@@ -34,7 +29,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import me.anwarshahriar.calligrapher.Calligrapher;
 
 import static com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob.CreateUser;
-import static com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob.UserDetailsUpload;
 
 /**
  * Created by nadus on 21-12-2017.
@@ -48,8 +42,11 @@ public class Step2 extends AppCompatActivity {
     FloatingActionButton next2;
     FloatingActionButton profpic;
     CircleImageView prof_pic;
-    String ColgName,UCat,Uname,Umail,Ucontact,Udob;
+    String Univname,UCat,Uname,Umail,Ucontact,Udob,Passkey,Ulocation;
     NoInternetDialog noInternetDialog;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+    public Context context;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,13 +55,16 @@ public class Step2 extends AppCompatActivity {
 
         noInternetDialog = new NoInternetDialog.Builder(Step2.this).setBgGradientStart(getResources().getColor(R.color.colorGray)).setBgGradientCenter(getResources().getColor(R.color.colorGray)).setBgGradientEnd(getResources().getColor(R.color.colorGrayDark)).build();
 
+        context = Step2.this;
         Bundle extras = getIntent().getExtras();
-        ColgName = extras.getString("ColgName");
+        Univname = extras.getString("Univname");
         UCat = extras.getString("Ucat");
         Uname = extras.getString("Uname");
         Umail = extras.getString("Umail");
         Ucontact = extras.getString("Ucontact");
         Udob = extras.getString("Udob");
+        Passkey = extras.getString("Upass");
+        Ulocation = extras.getString("Ulocation");
 
         profpic = (FloatingActionButton)findViewById(R.id.profpic);
         prof_pic = (CircleImageView)findViewById(R.id.profile_image);
@@ -124,21 +124,36 @@ public class Step2 extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            System.out.println("Location is "+Ulocation);
             // Log.d(TAG, String.valueOf(bitmap));
             prof_pic.setImageBitmap(bitmap);
             UserCreds userCreds = new UserCreds();
             userCreds.setUname(Uname);
             userCreds.setUmail(Umail);
             userCreds.setUDOB(Udob);
-            userCreds.setUinstitution(ColgName);
+            userCreds.setUinstitution(Univname);
             userCreds.setUcontact(Ucontact);
+            userCreds.setUpass(Passkey);
+            userCreds.setUlocation(Ulocation);
+
+
+
             System.out.println("Umail is "+userCreds.getUmail());
             String mailsplit = UserCreds.Umail.replace(".","_");
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(Step1.UnivName).child("UserCreds").child(UCat).child(mailsplit);
             System.out.println("PATH PASSED IS "+databaseReference);
-            CreateUser(uri,databaseReference,userCreds);
+
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            editor.putString("univ_name", Univname);
+            editor.putString("u_pass", Passkey);
+            editor.putString("mailsplit",mailsplit);
+            editor.apply();
+
+            CreateUser(uri,databaseReference,userCreds,context);
 
         }
+
     }
 
     @Override

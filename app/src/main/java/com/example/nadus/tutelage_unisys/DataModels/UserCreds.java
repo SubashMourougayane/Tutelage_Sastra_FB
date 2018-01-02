@@ -14,6 +14,24 @@ public class UserCreds implements Serializable
     public static String UDOB;
     public static String Uinstitution;
     public static String Ucontact;
+    public static String Upass;
+    public static String Ulocation;
+
+    public String getUlocation() {
+        return Ulocation;
+    }
+
+    public void setUlocation(String ulocation) {
+        Ulocation = ulocation;
+    }
+
+    public String getUpass() {
+        return Upass;
+    }
+
+    public void setUpass(String upass) {
+        Upass = upass;
+    }
 
     public String getUcontact() {
         return Ucontact;
