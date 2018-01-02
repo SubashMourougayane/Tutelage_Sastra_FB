@@ -20,7 +20,6 @@ import android.widget.EditText;
 import com.example.nadus.tutelage_unisys.DataModels.Universities;
 import com.example.nadus.tutelage_unisys.FB_Downloads.Retrieve;
 import com.example.nadus.tutelage_unisys.R;
-import com.example.nadus.tutelage_unisys.Splash.Splash;
 import com.firebase.client.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

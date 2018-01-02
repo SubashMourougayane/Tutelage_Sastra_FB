@@ -25,8 +25,7 @@ public class DataBlob
     private static FirebaseStorage storage;
     private static StorageReference storageReference;
     private static Firebase fb_db;
-    public static int userCreateFlag=0;
-    public static int CreateUser(Uri filePath, DatabaseReference databaseReference, UserCreds userCreds)
+    public static void CreateUser(Uri filePath, DatabaseReference databaseReference, UserCreds userCreds)
     {
         if(filePath != null)
         {
@@ -57,7 +56,6 @@ public class DataBlob
                         }
                     });
         }
-        return userCreateFlag;
 
     }
     public static void UserDetailsUpload(UserCreds userCreds,String FBpath)
