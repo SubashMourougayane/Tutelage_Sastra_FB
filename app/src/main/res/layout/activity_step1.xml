@@ -131,22 +131,15 @@
 
 
             <EditText
-                android:id="@+id/city"
+                android:id="@+id/passkey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="@string/City"
+                android:hint="Institution Passkey"
                 android:paddingBottom="15dp"
                 android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/pursuing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="@string/pursuing"
-                android:paddingBottom="15dp"
-                android:textSize="14sp" />
+
 
 
         </LinearLayout>
