@@ -21,7 +21,7 @@ import com.example.nadus.tutelage_unisys.DataModels.Universities;
 import com.example.nadus.tutelage_unisys.FB_Downloads.Retrieve;
 import com.example.nadus.tutelage_unisys.Home.HomeActivity;
 import com.example.nadus.tutelage_unisys.R;
-import com.example.nadus.tutelage_unisys.Splash.Splash_New;
+
 import com.firebase.client.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
