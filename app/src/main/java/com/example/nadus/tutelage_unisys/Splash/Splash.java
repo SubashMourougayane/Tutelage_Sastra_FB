@@ -98,6 +98,7 @@ public class Splash extends AppCompatActivity implements GoogleApiClient.OnConne
             i.putExtra("UEmail",account.getEmail());
             startActivity(i);
         } catch (ApiException e) {
+            System.out.println("Exception is"+e);
             Toast.makeText(getApplicationContext(),"Login failed try again",Toast.LENGTH_SHORT).show();
         }
     }
