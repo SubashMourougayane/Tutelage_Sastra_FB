@@ -35,7 +35,9 @@ import com.hlab.fabrevealmenu.model.FABMenuItem;
 import com.hlab.fabrevealmenu.view.FABRevealMenu;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import me.anwarshahriar.calligrapher.Calligrapher;
 import me.gujun.android.taggroup.TagGroup;
@@ -276,9 +278,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
 
         if (requestCode == PICK_IMAGE) {
             if (resultCode == RESULT_OK) {
-
-//                bitmap = (Bitmap) data.getExtras().get("data");
-//                imageData = imageUri;
+                Toast.makeText(getActivity(), ""+imageUri+"data="+data.getData(), Toast.LENGTH_SHORT).show();
                 bottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
 
             }
@@ -287,22 +287,12 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
             if (resultCode == RESULT_OK) {
                 try {
                     bottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
-//                    imageData = data.getData();
-//                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//                    Cursor cursor = getActivity().getContentResolver().query(imageData, filePathColumn, null, null, null);
-//                    cursor.moveToFirst();
-//
-//                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                    picturePath = cursor.getString(columnIndex);
-//
-//
-//                    yourUri = Uri.parse(picturePath);
-//
-//
-//                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageData);
+                    Toast.makeText(getActivity(), ""+imageUri, Toast.LENGTH_SHORT).show();
 
-                } catch (Exception e) {
+
+                }
+                catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
@@ -339,6 +329,13 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 bottomSheetBehavior3.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
 
+        }
+        if(requestCode==ACTIVITY_RECORD_SOUND)
+        {
+            if(resultCode==getActivity().RESULT_OK)
+            {
+                Toast.makeText(getActivity(), "Audio Uri"+audioUri, Toast.LENGTH_SHORT).show();
+            }
         }
 
         //  String path = audioUri.getPath(); // "file:///mnt/sdcard/FileName.mp3"
@@ -396,6 +393,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                     //imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
                     imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                     //create new Intent
+                   // Toast.makeText(getActivity(), "Image Uri="+imageUri, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
@@ -489,7 +487,9 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
 
     }
 
-    private void selectFiles() {
+
+    private void selectFiles()
+    {
         System.out.println("About to pick files");
         Intent gintent = new Intent();
         gintent.setType("file/*");
