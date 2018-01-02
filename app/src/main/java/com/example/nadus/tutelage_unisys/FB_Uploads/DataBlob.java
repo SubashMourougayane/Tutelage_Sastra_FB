@@ -19,6 +19,7 @@ import com.google.firebase.storage.UploadTask;
 /**
  * Created by msuba on 12/31/2017.
  */
+/*data blob for uploading blobs*/
 
 public class DataBlob
 {
