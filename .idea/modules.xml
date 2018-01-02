@@ -3,9 +3,15 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Tutelage_Sastra_FB.iml" filepath="$PROJECT_DIR$/Tutelage_Sastra_FB.iml" />
+<<<<<<< HEAD
       <module fileurl="file://X:\AndroidProjects\Tutelage_Shastra\Tutelage_Sastra_FB\Tutelage_unisys.iml" filepath="X:\AndroidProjects\Tutelage_Shastra\Tutelage_Sastra_FB\Tutelage_unisys.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://X:\AndroidProjects\Tutelage_Shastra\Tutelage_Sastra_FB\app\app.iml" filepath="X:\AndroidProjects\Tutelage_Shastra\Tutelage_Sastra_FB\app\app.iml" />
+=======
+      <module fileurl="file://D:\Tutelage_shaastra\Tutelage_Sastra_FB\Tutelage_unisys.iml" filepath="D:\Tutelage_shaastra\Tutelage_Sastra_FB\Tutelage_unisys.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\Tutelage_shaastra\Tutelage_Sastra_FB\app\app.iml" filepath="D:\Tutelage_shaastra\Tutelage_Sastra_FB\app\app.iml" />
+>>>>>>> master
     </modules>
   </component>
 </project>
