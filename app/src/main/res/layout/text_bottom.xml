@@ -13,11 +13,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="10dp"
         android:background="@drawable/layout_bg_2"
-        android:padding="5dp"
-        android:elevation="8dp">
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:padding="5dp">
 
         <EditText
 
@@ -41,23 +40,23 @@
             android:layout_height="1px"
             android:layout_marginBottom="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_normal"
-            android:background="@color/divider"/>
+            android:background="@color/divider" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginBottom="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_normal"
-            android:background="@color/divider"/>
+            android:background="@color/divider" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editText"
-            android:layout_alignLeft="@+id/button_share"
-            android:layout_alignStart="@+id/button_share"
-            android:layout_alignRight="@+id/button_share"
             android:layout_alignEnd="@+id/button_share"
+            android:layout_alignLeft="@+id/button_share"
+            android:layout_alignRight="@+id/button_share"
+            android:layout_alignStart="@+id/button_share"
+            android:layout_below="@+id/editText"
             android:elevation="5dp">
 
             <EditText
@@ -81,24 +80,24 @@
             android:layout_height="1px"
             android:layout_marginBottom="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_normal"
-            android:background="@color/divider"/>
+            android:background="@color/divider" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/upload"
-            android:padding="7dp"
-            android:text="Share"
-            android:textAlignment="center"
-            android:elevation="5dp"
-            android:textColor="#fff"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/desc"
             android:layout_centerHorizontal="true"
+            android:layout_marginEnd="100dp"
             android:layout_marginLeft="100dp"
             android:layout_marginRight="100dp"
             android:layout_marginStart="100dp"
-            android:layout_marginEnd="100dp"
-            />
+            android:background="@color/colorAccent"
+            android:elevation="5dp"
+            android:padding="7dp"
+            android:text="Share"
+            android:textAlignment="center"
+            android:textColor="#ffff" />
 
     </LinearLayout>
 

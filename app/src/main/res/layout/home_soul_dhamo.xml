@@ -47,7 +47,9 @@
         </RelativeLayout>
 
 
-        <include layout="@layout/text_bottom" />
+        <include
+            layout="@layout/text_bottom"
+            android:layout_width="match_parent" />
 
         <include layout="@layout/image_bottom" />
 

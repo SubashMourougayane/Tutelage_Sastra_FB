@@ -43,7 +43,7 @@
                         android:layout_height="100dp">
 
                         <ImageView
-                            android:id="@+id/imageView"
+                            android:id="@+id/img2"
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:layout_marginBottom="8dp"
@@ -278,19 +278,20 @@
                 android:background="@color/divider"/>
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/upload2"
+                android:id="@+id/imgup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
+                android:background="@color/colorAccent"
+                android:elevation="5dp"
                 android:padding="7dp"
                 android:text="Share"
                 android:textAlignment="center"
-                android:elevation="5dp"
-                android:textColor="#fff"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginBottom="10dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp" />
+                android:textColor="#fff" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
