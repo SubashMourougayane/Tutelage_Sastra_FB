@@ -66,12 +66,12 @@ public class Step1 extends AppCompatActivity {
 
         noInternetDialog = new NoInternetDialog.Builder(Step1.this).setBgGradientStart(getResources().getColor(R.color.colorGray)).setBgGradientCenter(getResources().getColor(R.color.colorGray)).setBgGradientEnd(getResources().getColor(R.color.colorGrayDark)).build();
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        if(firebaseAuth.getCurrentUser()!=null)
-        {
-            startActivity(new Intent(Step1.this,HomeActivity.class));
-            Step1.this.finish();
-        }
+//        firebaseAuth = FirebaseAuth.getInstance();
+//        if(firebaseAuth.getCurrentUser()!=null)
+//        {
+//            startActivity(new Intent(Step1.this,HomeActivity.class));
+//            Step1.this.finish();
+//        }
 
         Bundle extras = getIntent().getExtras();
         uname = extras.getString("Uname");

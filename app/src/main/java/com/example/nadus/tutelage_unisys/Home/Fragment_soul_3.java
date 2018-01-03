@@ -2,10 +2,13 @@ package com.example.nadus.tutelage_unisys.Home;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +19,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.content.res.AppCompatResources;
@@ -24,12 +28,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nadus.tutelage_unisys.Adapters.ClassAdapter;
 import com.example.nadus.tutelage_unisys.Adapters.FileAdapter;
+import com.example.nadus.tutelage_unisys.DataModels.Blob;
+import com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob;
 import com.example.nadus.tutelage_unisys.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.hlab.fabrevealmenu.listeners.OnFABMenuSelectedListener;
 import com.hlab.fabrevealmenu.model.FABMenuItem;
 import com.hlab.fabrevealmenu.view.FABRevealMenu;
@@ -43,6 +58,8 @@ import me.anwarshahriar.calligrapher.Calligrapher;
 import me.gujun.android.taggroup.TagGroup;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.nadus.tutelage_unisys.Home.Fragment_settings_5.MY_PREFS_NAME;
 
 /**
  * Created by nadus on 21-12-2017.
@@ -53,35 +70,34 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     FloatingActionButton fab;
     Calligrapher calligrapher;
     TextView empty_text;
-    RecyclerView recyclerView;
+    RecyclerView recyclerVie0w;
     ArrayList<String> list = new ArrayList<String>();
-
+    String description;
     ArrayList<FileAdapter> fileAdapters=new ArrayList<>();
     ItemAdapter3 itemAdapter3;
-
+    ImageView img2;
+    EditText desc2;
     FloatingActionButton field;
     RecyclerView indivRecycler;
-
+    Button imgup;
     private static final int PICK_IMAGE = 1;
     private static final int PICK_Camera_IMAGE = 2;
     public static final int REQUEST_PICK_VIDEO = 4;
     private static final int VIDEO_CAPTURE = 101;
     private static final int PICK_FILE = 5;
-    Uri audioUri;
     BottomSheetBehavior bottomSheetBehavior, bottomSheetBehavior2, bottomSheetBehavior3, bottomSheetBehavior4, bottomSheetBehavior5;
-
     //BottomSheetDialog bottomSheetDialog, bottomSheetDialog2, bottomSheetDialog3, bottomSheetDialog4, bottomSheetDialog5;
-
-
+    FirebaseUser user;
+    DatabaseReference fb_db;
+    StorageReference storageReference;
     protected static final int REQUEST_PICK_AUDIO = 6;
     public static final int ACTIVITY_RECORD_SOUND = 7;
     CharSequence[] items1 = {"Take Photo", "Choose from library", "Cancel"};
     private ArrayList<FABMenuItem> items;
     CharSequence[] itemVi={"Take Video","Choose from library","Cancel"};
-
-    Uri imageData,imageUri,yourUri;
-    Uri VideoUri;
-    String descr,path;
+    Uri selecteduri;
+    String media,univ_name;
+    String path;
     public Bitmap bitmap;
     public String picturePath;
     BottomSheetDialog bottomSheetDialog;
@@ -104,35 +120,14 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
 
         calligrapher = new Calligrapher(getActivity());
         calligrapher.setFont(getActivity(),"GlacialIndifference-Regular.ttf",true);
-//
-//        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-//        empty_text = (TextView) v.findViewById(R.id.empty_text);
-//
-//        fab = (FloatingActionButton) v.findViewById(R.id.fab);
-//
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//            }
-//        });
-//
-//        if(list.isEmpty())
-//        {
-//            recyclerView.setVisibility(View.GONE);
-//            empty_text.setVisibility(View.VISIBLE);
-//        }
-//        else
-//        {
-//            recyclerView.setVisibility(View.VISIBLE);
-//            empty_text.setVisibility(View.GONE);
-//        }
-
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences preferences = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        univ_name = preferences.getString("univ_name","").replace(" ","");
         field=(FloatingActionButton)view.findViewById(R.id.field);
         indivRecycler=(RecyclerView)view.findViewById(R.id.recyclerindiv);
         indivRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -141,6 +136,9 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         bottomSheet3=view.findViewById(R.id.b3);
         bottomSheet4=view.findViewById(R.id.b4);
         bottomSheet5=view.findViewById(R.id.b5);
+        imgup = (Button)bottomSheet2.findViewById(R.id.imgup);
+        desc2 = (EditText)bottomSheet2.findViewById(R.id.desc2);
+        img2 = (ImageView)bottomSheet2.findViewById(R.id.img2);
         bottomSheetBehavior=BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior2 = BottomSheetBehavior.from(bottomSheet2);
         bottomSheetBehavior3=BottomSheetBehavior.from(bottomSheet3);
@@ -152,7 +150,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         bottomSheetBehavior3.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior4.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior5.setState(BottomSheetBehavior.STATE_HIDDEN);
-
+        storageReference = FirebaseStorage.getInstance().getReference();
         fileAdapters.add(new FileAdapter("Dummy",new String[]{"attr1","attr2"}));
         int i=6;
         while(i>0)
@@ -165,7 +163,6 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         indivRecycler.setAdapter(itemAdapter3);
         final FABRevealMenu fabMenu = view.findViewById(R.id.fabMenu);
         //initItems(false);
-
         try
         {
             if (field != null && fabMenu != null)
@@ -186,6 +183,35 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         {
             e.printStackTrace();
         }
+        imgup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                description = desc2.getText().toString();
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.HH.mm.ss");
+                String format = sdf.format(new Date()).replace(".","_");
+                System.out.println("Date "+format);
+                Blob blob = new Blob();
+                blob.setFdate(format);
+                blob.setFname(format+"@"+user.getDisplayName().replace(" ",""));
+                blob.setFdesc(description);
+                blob.setFtype(media);
+                blob.setFdate(format);
+                //have to continue
+                String node =  format+"@"+user.getDisplayName().replace(" ","");
+                fb_db = FirebaseDatabase.getInstance().getReference().child("Users").child(univ_name).child("Classes")
+                        .child(user.getEmail().replace(".","_"))
+                        .child("Images").child("4A")
+                        .child(format+"@"+user.getDisplayName().replace(" ",""));
+                storageReference = storageReference.child("Users")
+                        .child("Classes")
+                        .child(user.getEmail().replace(".","_"))
+                        .child("Images").child("4A")
+                        .child(format+"@"+user.getDisplayName().replace(" ",""));
+                System.out.println("final FB_DB"+fb_db);
+                DataBlob.PutBlob(selecteduri,fb_db,storageReference,node,blob, (FragmentActivity) getContext());
+            }
+        });
     }
 
     private void initItems(boolean toShowDoubleItems)
@@ -203,18 +229,23 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     {
         switch (id) {
             case R.id.menu_file:
+                media = "Files";
                 selectFiles();
                 break;
             case R.id.menu_image:
+                media = "Images";
                 selectImage();
                 break;
             case R.id.menu_video:
+                media = "Videos";
                 selectVideo();
                 break;
             case R.id.menu_text:
+                media = "Texts";
                 selectText();
                 break;
             case R.id.menu_audio:
+                media = "Audios";
                 selectAudio();
                 break;
         }
@@ -278,16 +309,20 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
 
         if (requestCode == PICK_IMAGE) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(getActivity(), ""+imageUri+"data="+data.getData(), Toast.LENGTH_SHORT).show();
+                selecteduri = data.getData();
+                img2.setImageURI(selecteduri);
                 bottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
+
 
             }
         }
         if (requestCode == PICK_Camera_IMAGE) {
             if (resultCode == RESULT_OK) {
                 try {
+
+                    img2.setImageURI(selecteduri);
                     bottomSheetBehavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    Toast.makeText(getActivity(), ""+imageUri, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ""+selecteduri, Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -334,7 +369,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         {
             if(resultCode==getActivity().RESULT_OK)
             {
-                Toast.makeText(getActivity(), "Audio Uri"+audioUri, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Audio Uri"+selecteduri, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -355,10 +390,10 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 {
                     Toast.makeText(getContext(), "Video was not selected", Toast.LENGTH_SHORT).show();
                 } else {
-                    VideoUri = data.getData();
-                    Toast.makeText(getContext(), VideoUri.toString(), Toast.LENGTH_SHORT).show();
+                    selecteduri = data.getData();
+                    Toast.makeText(getContext(), selecteduri.toString(), Toast.LENGTH_SHORT).show();
 
-                    System.out.println("VIDEOO" + VideoUri + " d " + VideoUri.getPath());
+                    System.out.println("VIDEOO" + selecteduri + " d " + selecteduri.getPath());
                     bottomSheetBehavior4.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
@@ -391,11 +426,11 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                     values.put(MediaStore.Images.Media.TITLE, fileName);
                     values.put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera");
                     //imageUri is the current activity attribute, define and save it for later usage (also in onSaveInstanceState)
-                    imageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                    selecteduri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                     //create new Intent
                    // Toast.makeText(getActivity(), "Image Uri="+imageUri, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, selecteduri);
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
                     startActivityForResult(intent, PICK_Camera_IMAGE);
                 } else if (items[item].equals("Choose from Library")) {
@@ -430,11 +465,11 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                             + "/myvideo"+".mp4");
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     Toast.makeText(getContext(), "Take Video", Toast.LENGTH_SHORT).show();
-                    VideoUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", mediaFile);
+                    selecteduri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", mediaFile);
 
-                    path=VideoUri.toString();
+                    path=selecteduri.toString();
 
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, VideoUri);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, selecteduri);
                     startActivityForResult(intent, VIDEO_CAPTURE);
 
 
@@ -469,7 +504,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                     File mediaFile1=new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/myaudios.mp3");
 
                     Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                    audioUri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", mediaFile1);
+                    selecteduri = FileProvider.getUriForFile(getActivity(), getActivity().getPackageName() + ".provider", mediaFile1);
                     startActivityForResult(intent, ACTIVITY_RECORD_SOUND);
                 } else if (items[item].equals("Choose from Library")) {
                     Intent intent = new Intent();

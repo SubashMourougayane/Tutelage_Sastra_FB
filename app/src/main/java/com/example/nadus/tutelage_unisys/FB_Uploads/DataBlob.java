@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.example.nadus.tutelage_unisys.DataModels.Blob;
 import com.example.nadus.tutelage_unisys.DataModels.UserCreds;
 import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -72,8 +74,43 @@ public class DataBlob extends AppCompatActivity
         }
 
     }
-    public static void UserDetailsUpload(UserCreds userCreds,String FBpath)
+    public static void PutBlob(Uri selecteduri, DatabaseReference databaseReference, StorageReference storageReference, String node, Blob blob, FragmentActivity activity)
     {
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setTitle("Please Wait");
+        progressDialog.setMessage("Uploading...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        if(selecteduri != null)
+        {
+            //fb_db = new Firebase("https://tutelage-d619f.firebaseio.com/").child(FBPath);
+            storage = FirebaseStorage.getInstance();
+//            DataBlob.storageReference = storage.getReference();
+//            StorageReference ref = DataBlob.storageReference.child(databaseReference+node);
+            storageReference.putFile(selecteduri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            databaseReference.setValue(blob);
+                            // userCreateFlag = 1;
+//                            return Boolean.TRUE;
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 
-    }
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            System.out.println("PROGRESS IS "+progress );
+                        }
+                    });
+        }
+}
 }
