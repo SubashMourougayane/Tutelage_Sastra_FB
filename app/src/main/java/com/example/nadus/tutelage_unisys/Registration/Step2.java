@@ -44,7 +44,6 @@ public class Step2 extends AppCompatActivity {
     CircleImageView prof_pic;
     String Univname,UCat,Uname,Umail,Ucontact,Udob,Passkey,Ulocation;
     NoInternetDialog noInternetDialog;
-    public static final String MY_PREFS_NAME = "MyPrefsFile";
     public Context context;
 
 
@@ -144,7 +143,7 @@ public class Step2 extends AppCompatActivity {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(Step1.UnivName).child("UserCreds").child(UCat).child(mailsplit);
             System.out.println("PATH PASSED IS "+databaseReference);
 
-            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences("Tutelage", 0).edit();
             editor.putString("univ_name", Univname);
             editor.putString("u_pass", Passkey);
             editor.putString("mailsplit",mailsplit);

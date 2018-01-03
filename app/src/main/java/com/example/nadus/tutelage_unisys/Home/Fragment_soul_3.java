@@ -102,7 +102,6 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     public String picturePath;
     BottomSheetDialog bottomSheetDialog;
     View bottomSheet,bottomSheet2,bottomSheet3,bottomSheet4,bottomSheet5;
-
     public static Fragment_soul_3 newInstance() {
         Fragment_soul_3 fragment = new Fragment_soul_3();
         return fragment;
@@ -144,7 +143,6 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         bottomSheetBehavior3=BottomSheetBehavior.from(bottomSheet3);
         bottomSheetBehavior4=BottomSheetBehavior.from(bottomSheet4);
         bottomSheetBehavior5=BottomSheetBehavior.from(bottomSheet5);
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior3.setState(BottomSheetBehavior.STATE_HIDDEN);

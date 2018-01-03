@@ -56,47 +56,16 @@
                     android:textSize="16dp"
                     android:textStyle="bold" />
 
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/nextTime"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="10"
+                    android:gravity="center"
+                    android:text="10:30 AM"
                     android:textColor="#fff"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:text="."
-                    android:textColor="#fff"
-                    android:textSize="14dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="30"
-                    android:textColor="#fff"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:text="AM"
-                    android:textColor="#fff"
-                    android:textSize="14dp" />
 
             </LinearLayout>
 
@@ -113,6 +82,7 @@
                     android:src="@drawable/comments" />
 
                 <TextView
+                    android:id="@+id/nextClass"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

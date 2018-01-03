@@ -32,7 +32,6 @@ public class HomeActivity extends AppCompatActivity {
 
         calligrapher = new Calligrapher(this);
         calligrapher.setFont(HomeActivity.this,"GlacialIndifference-Regular.ttf",true);
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -75,6 +74,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         noInternetDialog.onDestroy();
     }
+
 
 
 }

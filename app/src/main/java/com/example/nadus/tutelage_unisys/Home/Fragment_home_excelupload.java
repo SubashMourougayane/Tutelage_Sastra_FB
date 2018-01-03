@@ -1,5 +1,7 @@
 package com.example.nadus.tutelage_unisys.Home;
 
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,9 +15,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.nadus.tutelage_unisys.Adapters.ClassAdapter;
+import com.example.nadus.tutelage_unisys.DataModels.TimeTable;
+import com.example.nadus.tutelage_unisys.DataModels.Universities;
 import com.example.nadus.tutelage_unisys.R;
+import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
@@ -30,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,14 +65,21 @@ public class Fragment_home_excelupload extends Fragment {
 
     Button onsdCard,updir;
 
-
+    SharedPreferences preferences;
+    DatabaseReference fb_db;
     ArrayList<ClassAdapter> list1 = new ArrayList<ClassAdapter>();
-
+    ArrayList<String> timings=new ArrayList<>();
+    ArrayList<String> Mon=new ArrayList<>();
+    ArrayList<String> Tues=new ArrayList<>();
+    ArrayList<String> Weds=new ArrayList<>();
+    ArrayList<String> Thurs=new ArrayList<>();
+    ArrayList<String> Fri=new ArrayList<>();
+    ArrayList<String> Sat=new ArrayList<>();
     ArrayList<String> pathHistory;
     String lastDirectory;
     int count = 0;
     ArrayList<String> stringArrayList = new ArrayList<>();
-
+    String UnivName,Mail_Split;
     public static Fragment_home_excelupload newInstance() {
         Fragment_home_excelupload fragment = new Fragment_home_excelupload();
         return fragment;
@@ -79,13 +97,37 @@ public class Fragment_home_excelupload extends Fragment {
 
         calligrapher = new Calligrapher(getActivity());
         calligrapher.setFont(getActivity(),"GlacialIndifference-Regular.ttf",true);
-
         updir = (Button) v.findViewById(R.id.updir);
         confirm = (Button) v.findViewById(R.id.confirm);
         upload = (Button) v.findViewById(R.id.upload);
         excel_upload = (Button) v.findViewById(R.id.excel_upload);
+        preferences = getActivity().getSharedPreferences("Tutelage",0);
+        UnivName = preferences.getString("univ_name","");
+        Mail_Split = preferences.getString("mailsplit","");
         list = (ListView)v.findViewById(R.id.list);
+        fb_db = FirebaseDatabase.getInstance().getReference();
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(),"LOL",Toast.LENGTH_SHORT).show();
+                TimeTable timeTable = new TimeTable();
+                timeTable.setMonday(Mon);
+                timeTable.setTuesday(Tues);
+                timeTable.setWednesday(Weds);
+                timeTable.setThursday(Thurs);
+                timeTable.setFriday(Fri);
+                timeTable.setSaturday(Sat);
+                timeTable.setTimings(timings);
 
+
+
+                System.out.print("UPLOAD TASK"+ timeTable.getMonday());
+                fb_db = fb_db.child("Users").child(UnivName).child("TimeTable")
+                        .child("Teachers").child(Mail_Split);
+                System.out.println("BOWWW "+fb_db);
+                fb_db.setValue(timeTable);
+            }
+        });
         upload.setVisibility(View.GONE);
         excel_upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,12 +162,7 @@ public class Fragment_home_excelupload extends Fragment {
             }
         });
 
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                upload.setVisibility(View.VISIBLE);
-            }
-        });
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -133,8 +170,15 @@ public class Fragment_home_excelupload extends Fragment {
                 if(lastDirectory.equals(adapterView.getItemAtPosition(i)))
                 {
                     Log.d(TAG,"InternalStorage: Selected a file for upload: "+lastDirectory);
-
+                    timings.clear();
+                    Mon.clear();
+                    Tues.clear();
+                    Weds.clear();
+                    Thurs.clear();
+                    Fri.clear();
+                    Sat.clear();
                     readExcelData(lastDirectory);
+
 
                 }
                 else
@@ -176,7 +220,14 @@ public class Fragment_home_excelupload extends Fragment {
             int column = sheet.getRow(0).getLastCellNum();
             Cell cell1;
             System.out.println("row=" + rowsCount);
-            for (int rowIndex=0; rowIndex<rowsCount;rowIndex++)
+            row1=sheet.getRow(0);
+            for(int cellIndex=0;cellIndex<sheet.getRow(0).getLastCellNum();cellIndex++)
+            {
+                if(!row1.getCell(cellIndex).equals("")) {
+                    timings.add(getCellAsString(row1, cellIndex, formulaEvaluator));
+                }
+            }
+            for (int rowIndex=1; rowIndex<rowsCount&&rowIndex<=7;rowIndex++)
             {
                 row=sheet.getRow(rowIndex);
                 if(row !=null)
@@ -190,7 +241,23 @@ public class Fragment_home_excelupload extends Fragment {
                             String dect=getCellAsString(row,cellIndex,formulaEvaluator);
                             if(!dect.equals(""))
                             {
-                                stringArrayList.add(""+dect);
+                               // stringArrayList.add(""+dect+"("+rowIndex+","+cellIndex+")");
+                                switch(rowIndex)
+                                {
+                                    case 1:Mon.add(""+dect+","+cellIndex);
+                                                break;
+                                    case 2:Tues.add(""+dect+","+cellIndex);
+                                        break;
+                                    case 3:Weds.add(""+dect+","+cellIndex);
+                                        break;
+                                    case 4:Thurs.add(""+dect+","+cellIndex);
+                                        break;
+                                    case 5:Fri.add(""+dect+","+cellIndex);
+                                        break;
+                                    case 6:Sat.add(""+dect+","+cellIndex);
+                                            break;
+                                        default:break;
+                                }
                             }
                         }
                     }
@@ -200,10 +267,11 @@ public class Fragment_home_excelupload extends Fragment {
                 subjects=new String[stringArrayList.size()];
                 stringArrayList.toArray(subjects);
             }
-            for (String s : stringArrayList) {
-                System.out.println("values :" + s);
-            }
-            System.out.println("ClassAdapter_Size=" + list1.size());
+            System.out.println("MONDAY "+Mon);
+
+            System.out.println("Timings="+timings.size());
+            System.out.println("Monday--"+Mon.size());
+            System.out.println("Thursday--"+Thurs.size());
            // System.out.println("ClassAdapter_Value" + list1.get(1).getA().toString());
             Iterator<ClassAdapter> iterator = list1.iterator();
 
@@ -347,5 +415,6 @@ public class Fragment_home_excelupload extends Fragment {
             }
         }
     }
+
 
 }
