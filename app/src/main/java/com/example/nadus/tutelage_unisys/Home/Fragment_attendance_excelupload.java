@@ -106,14 +106,14 @@ public class Fragment_attendance_excelupload extends Fragment {
                         pathHistory.add(count,System.getenv("EXTERNAL_STORAGE"));
                         Log.d(TAG, "BTNOnSDCard: "+pathHistory.get(count));
                         checkInternalStorage();
-//                        Toast.makeText(getActivity(), "clicked", Toast.LENGTH_SHORT).show();
 
                     }
         });
         confirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 upload.setVisibility(View.VISIBLE);
             }
         });
@@ -131,7 +131,7 @@ public class Fragment_attendance_excelupload extends Fragment {
                     count--;
                     checkInternalStorage();
                     Log.d(TAG,"btnupdir: "+pathHistory.get(count));
-                  //  Toast.makeText(getActivity(), "btnupdir", Toast.LENGTH_SHORT).show();
+
                 }
 
             }
@@ -156,7 +156,7 @@ public class Fragment_attendance_excelupload extends Fragment {
                 }
             }
         });
-//
+
         return v;
     }
 

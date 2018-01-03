@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nadus.tutelage_unisys.Adapters.ClassAdapter;
+import com.example.nadus.tutelage_unisys.Adapters.ItemAdapter4;
 import com.example.nadus.tutelage_unisys.R;
 
 import java.util.ArrayList;
@@ -33,13 +34,15 @@ public class Fragment_attendance_2 extends Fragment {
     ItemAdapter4 it4;
     ArrayList<ClassAdapter> list = new ArrayList<>();
 
-    public static Fragment_attendance_2 newInstance() {
+    public static Fragment_attendance_2 newInstance()
+    {
         Fragment_attendance_2 fragment = new Fragment_attendance_2();
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
@@ -47,7 +50,7 @@ public class Fragment_attendance_2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.home_attendance, container, false);
-
+            list.clear();
         calligrapher = new Calligrapher(getActivity());
         calligrapher.setFont(getActivity(),"GlacialIndifference-Regular.ttf",true);
 
@@ -82,59 +85,16 @@ public class Fragment_attendance_2 extends Fragment {
 
         return v;
     }
-    private class ItemAdapter4 extends RecyclerView.Adapter<ViewHolder>
-    {
-        private int listItemLayout;
-        private ArrayList<ClassAdapter> list1;
-        public ItemAdapter4(int listlayout, ArrayList<ClassAdapter> tl)
-        {
-            this.listItemLayout=listlayout;
-            this.list1=tl;
-        }
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(listItemLayout, parent, false);
-            final ViewHolder myViewHolder = new ViewHolder(view);
-            return myViewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position)
-        {
-            holder.mTagGroup.setTags(list1.get(position).getA());
-            Typeface typeFace = Typeface.createFromAsset(getResources().getAssets(), "GlacialIndifference-Regular.ttf");
-            holder.textView.setTypeface(typeFace);
-            holder.textView.setText(list1.get(position).getClassname());
-        }
-
-        @Override
-        public int getItemCount()
-        {
-            return list1==null?0:list1.size();
-        }
-    }
-
-    private class ViewHolder extends RecyclerView.ViewHolder
-    {
-
-        TextView textView;
-        TagGroup mTagGroup;
-        public ViewHolder(View view)
-        {
-            super(view);
-
-            mTagGroup = (TagGroup) view.findViewById(R.id.tag_group);
-            textView=(TextView)view.findViewById(R.id.classname);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getActivity(), "Student List", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-
-        }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        it4.setOnItemClickListener(new ItemAdapter4.MyClickListener() {
+            @Override
+            public void onItemClick(int position, View v)
+            {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,new Fragment_student()).addToBackStack(null).commit();
+            }
+        });
     }
 
 }

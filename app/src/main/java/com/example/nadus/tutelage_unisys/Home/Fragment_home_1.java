@@ -17,7 +17,10 @@ import com.example.nadus.tutelage_unisys.Adapters.Timeline;
 import com.example.nadus.tutelage_unisys.R;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by nadus on 21-12-2017.
@@ -48,12 +51,17 @@ public class Fragment_home_1 extends Fragment {
         timeline_recycler=(RecyclerView)v.findViewById(R.id.timeline_recycler);
         timeline_recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        timelineArrayList.add(new Timeline(2));
-        timelineArrayList.add(new Timeline(2));
-        timelineArrayList.add(new Timeline(2));
-        timelineArrayList.add(new Timeline(1));
-        timelineArrayList.add(new Timeline(3));
-        timelineArrayList.add(new Timeline(1));
+
+        final String time = "3:15";
+
+        try {
+            final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+            final Date dateObj = sdf.parse(time);
+            System.out.println(dateObj);
+            System.out.println(new SimpleDateFormat("K:mm").format(dateObj));
+        } catch (final ParseException e) {
+            e.printStackTrace();
+        }
 
         itemAdapter=new ItemAdapter(R.layout.item_class,timelineArrayList);
         timeline_recycler.setAdapter(itemAdapter);
