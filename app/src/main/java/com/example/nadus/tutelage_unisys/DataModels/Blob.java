@@ -10,6 +10,15 @@ public class Blob
     public static String Ftype;
     public static String Fdate;
     public  static String Fdesc;
+    public static String Fauthor;
+
+    public  String getFauthor() {
+        return Fauthor;
+    }
+
+    public static void setFauthor(String fauthor) {
+        Fauthor = fauthor;
+    }
 
     public  String getFdesc() {
         return Fdesc;

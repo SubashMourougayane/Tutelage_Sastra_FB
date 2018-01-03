@@ -217,11 +217,11 @@
                 android:layout_alignLeft="@+id/button_share"
                 android:layout_alignRight="@+id/button_share"
                 android:layout_alignStart="@+id/button_share"
-                android:layout_below="@+id/editText"
+                android:layout_below="@+id/textContent"
                 android:elevation="5dp">
 
                 <EditText
-                    android:id="@+id/desc4"
+                    android:id="@+id/viddesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -244,7 +244,7 @@
                 android:background="@color/divider" />
 
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/upload4"
+                android:id="@+id/vidup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"

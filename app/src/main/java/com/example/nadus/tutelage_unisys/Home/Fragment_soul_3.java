@@ -1,6 +1,7 @@
 package com.example.nadus.tutelage_unisys.Home;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.content.res.AppCompatResources;
@@ -28,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,20 +42,29 @@ import com.example.nadus.tutelage_unisys.Adapters.FileAdapter;
 import com.example.nadus.tutelage_unisys.DataModels.Blob;
 import com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob;
 import com.example.nadus.tutelage_unisys.R;
+import com.example.nadus.tutelage_unisys.Utils.ImageFilePath;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.hlab.fabrevealmenu.listeners.OnFABMenuSelectedListener;
 import com.hlab.fabrevealmenu.model.FABMenuItem;
 import com.hlab.fabrevealmenu.view.FABRevealMenu;
 
 import java.io.File;
+import java.net.URI;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import me.anwarshahriar.calligrapher.Calligrapher;
 import me.gujun.android.taggroup.TagGroup;
@@ -60,6 +72,7 @@ import me.gujun.android.taggroup.TagGroup;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.nadus.tutelage_unisys.Home.Fragment_settings_5.MY_PREFS_NAME;
+import static com.example.nadus.tutelage_unisys.Utils.ImageFilePath.getPath;
 
 /**
  * Created by nadus on 21-12-2017.
@@ -67,24 +80,27 @@ import static com.example.nadus.tutelage_unisys.Home.Fragment_settings_5.MY_PREF
 
 public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedListener
 {
+    String TimeStamp;
     FloatingActionButton fab;
     Calligrapher calligrapher;
     TextView empty_text;
     RecyclerView recyclerVie0w;
     ArrayList<String> list = new ArrayList<String>();
-    String description;
+    String description,curClass="2A";
     ArrayList<FileAdapter> fileAdapters=new ArrayList<>();
     ItemAdapter3 itemAdapter3;
     ImageView img2;
-    EditText desc2;
+    String content;
+    EditText desc2,viddesc,auddesc,filedesc,textdesc,textContent;
     FloatingActionButton field;
     RecyclerView indivRecycler;
-    Button imgup;
+    Button imgup,vidup,audup,fileup,textup;
     private static final int PICK_IMAGE = 1;
     private static final int PICK_Camera_IMAGE = 2;
     public static final int REQUEST_PICK_VIDEO = 4;
     private static final int VIDEO_CAPTURE = 101;
     private static final int PICK_FILE = 5;
+    StorageMetadata metadata;
     BottomSheetBehavior bottomSheetBehavior, bottomSheetBehavior2, bottomSheetBehavior3, bottomSheetBehavior4, bottomSheetBehavior5;
     //BottomSheetDialog bottomSheetDialog, bottomSheetDialog2, bottomSheetDialog3, bottomSheetDialog4, bottomSheetDialog5;
     FirebaseUser user;
@@ -96,13 +112,12 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     private ArrayList<FABMenuItem> items;
     CharSequence[] itemVi={"Take Video","Choose from library","Cancel"};
     Uri selecteduri;
-    String media,univ_name;
+    String media,univ_name,author;
     String path;
     public Bitmap bitmap;
     public String picturePath;
     BottomSheetDialog bottomSheetDialog;
     View bottomSheet,bottomSheet2,bottomSheet3,bottomSheet4,bottomSheet5;
-
     public static Fragment_soul_3 newInstance() {
         Fragment_soul_3 fragment = new Fragment_soul_3();
         return fragment;
@@ -126,8 +141,10 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SharedPreferences preferences = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences preferences = getActivity().getSharedPreferences("Tutelage", 0);
         univ_name = preferences.getString("univ_name","").replace(" ","");
+        author = preferences.getString("mailsplit","");
+        System.out.println("Unive name "+univ_name+"  "+ author);
         field=(FloatingActionButton)view.findViewById(R.id.field);
         indivRecycler=(RecyclerView)view.findViewById(R.id.recyclerindiv);
         indivRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -136,15 +153,30 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         bottomSheet3=view.findViewById(R.id.b3);
         bottomSheet4=view.findViewById(R.id.b4);
         bottomSheet5=view.findViewById(R.id.b5);
+        //text
+        textup = (Button)bottomSheet.findViewById(R.id.upload);
+        textdesc = (EditText)bottomSheet.findViewById(R.id.desc);
+        textContent=(EditText)bottomSheet.findViewById(R.id.textContent);
+        //image
         imgup = (Button)bottomSheet2.findViewById(R.id.imgup);
         desc2 = (EditText)bottomSheet2.findViewById(R.id.desc2);
         img2 = (ImageView)bottomSheet2.findViewById(R.id.img2);
+        //audio
+        audup = (Button)bottomSheet3.findViewById(R.id.audup);
+        auddesc = (EditText)bottomSheet3.findViewById(R.id.auddesc);
+        //video
+        viddesc = (EditText)bottomSheet4.findViewById(R.id.viddesc);
+        vidup = (Button)bottomSheet4.findViewById(R.id.vidup);
+        //file
+        fileup = (Button)bottomSheet5.findViewById(R.id.fileup);
+        filedesc = (EditText) bottomSheet5.findViewById(R.id.filedesc);
+
+
         bottomSheetBehavior=BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior2 = BottomSheetBehavior.from(bottomSheet2);
         bottomSheetBehavior3=BottomSheetBehavior.from(bottomSheet3);
         bottomSheetBehavior4=BottomSheetBehavior.from(bottomSheet4);
         bottomSheetBehavior5=BottomSheetBehavior.from(bottomSheet5);
-
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior3.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -183,35 +215,92 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         {
             e.printStackTrace();
         }
+        //share onclick listners
+        textup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fb_db=null;
+                description = textdesc.getText().toString();
+                content = textContent.getText().toString();
+                String TimeStamp = new SimpleDateFormat("dd-MM-yy HH:mm:ss").format(new Date());
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                Blob blob = new Blob();
+                blob.setFdate(TimeStamp);
+                blob.setFname(content);
+                blob.setFdesc(description);
+                blob.setFtype(media);
+                blob.setFdate(TimeStamp);
+                Blob.setFauthor(author);
+                fb_db = FirebaseDatabase.getInstance().getReference()
+                        .child("Users").child(univ_name)
+                        .child("Classes").child(curClass)
+                        .child(TimeStamp+"@"+author);
+                fb_db.setValue(blob);
+                //lol-pending fragment transaction
+
+
+            }
+        });
         imgup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                fb_db = null;
+                metadata = null;
                 description = desc2.getText().toString();
-                user = FirebaseAuth.getInstance().getCurrentUser();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy.HH.mm.ss");
-                String format = sdf.format(new Date()).replace(".","_");
-                System.out.println("Date "+format);
-                Blob blob = new Blob();
-                blob.setFdate(format);
-                blob.setFname(format+"@"+user.getDisplayName().replace(" ",""));
-                blob.setFdesc(description);
-                blob.setFtype(media);
-                blob.setFdate(format);
-                //have to continue
-                String node =  format+"@"+user.getDisplayName().replace(" ","");
-                fb_db = FirebaseDatabase.getInstance().getReference().child("Users").child(univ_name).child("Classes")
-                        .child(user.getEmail().replace(".","_"))
-                        .child(media).child("4A")
-                        .child(format+"@"+user.getDisplayName().replace(" ",""));
-                storageReference = storageReference.child("Users")
-                        .child("Classes")
-                        .child(user.getEmail().replace(".","_"))
-                        .child("Images").child("4A")
-                        .child(format+"@"+user.getDisplayName().replace(" ",""));
-                System.out.println("final FB_DB"+fb_db);
-                DataBlob.PutBlob(selecteduri,fb_db,storageReference,node,blob, (FragmentActivity) getContext());
+                upload();
             }
         });
+        vidup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fb_db = null;
+                metadata = null;
+                description = viddesc.getText().toString();
+                upload();
+            }
+        });
+        audup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fb_db = null;
+                metadata = null;
+                description = auddesc.getText().toString();
+                upload();
+            }
+        });
+        fileup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fb_db = null;
+                metadata = null;
+                description = filedesc.getText().toString();
+                upload();
+            }
+        });
+    }
+    public void upload()
+    {
+        String TimeStamp = new SimpleDateFormat("dd-MM-yy HH:mm:ss").format(new Date());
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        Blob blob = new Blob();
+        blob.setFdate(TimeStamp);
+        blob.setFname(TimeStamp+"@"+user.getDisplayName().replace(" ",""));
+        blob.setFdesc(description);
+        blob.setFtype(media);
+        blob.setFdate(TimeStamp);
+        Blob.setFauthor(author);
+
+        fb_db = FirebaseDatabase.getInstance().getReference()
+                .child("Users").child(univ_name)
+                .child("Classes").child(curClass).child(TimeStamp+"@"+author);
+        storageReference = storageReference
+                .child("Users").child(univ_name)
+                .child("Classes").child(curClass).child(TimeStamp+"@"+author);
+        System.out.println("final FB_DB"+fb_db);
+        DataBlob.PutBlob(selecteduri,fb_db,storageReference,blob, (FragmentActivity) getContext());
+        selecteduri = null;
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
     }
 
     private void initItems(boolean toShowDoubleItems)
@@ -234,10 +323,16 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 break;
             case R.id.menu_image:
                 media = "Images";
+                 metadata = new StorageMetadata.Builder()
+                        .setContentType("image/jpeg")
+                        .build();
                 selectImage();
                 break;
             case R.id.menu_video:
                 media = "Videos";
+                 metadata = new StorageMetadata.Builder()
+                        .setContentType("video/mp4")
+                        .build();
                 selectVideo();
                 break;
             case R.id.menu_text:
@@ -246,6 +341,9 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 break;
             case R.id.menu_audio:
                 media = "Audios";
+                 metadata = new StorageMetadata.Builder()
+                        .setContentType("audio/mpeg")
+                        .build();
                 selectAudio();
                 break;
         }
@@ -306,6 +404,15 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
 
+        if(requestCode==PICK_FILE)
+        {
+            if (resultCode== RESULT_OK)
+            {
+                selecteduri = data.getData();
+                bottomSheetBehavior5.setState(BottomSheetBehavior.STATE_EXPANDED);
+                Toast.makeText(getActivity(), ""+selecteduri, Toast.LENGTH_SHORT).show();
+            }
+        }
 
         if (requestCode == PICK_IMAGE) {
             if (resultCode == RESULT_OK) {
@@ -331,12 +438,6 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                     e.printStackTrace();
                 }
             }
-        }
-
-        if (requestCode == PICK_FILE)
-        {
-
-            bottomSheetBehavior5.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
 
         if (requestCode == VIDEO_CAPTURE)
@@ -365,13 +466,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
             }
 
         }
-        if(requestCode==ACTIVITY_RECORD_SOUND)
-        {
-            if(resultCode==getActivity().RESULT_OK)
-            {
-                Toast.makeText(getActivity(), "Audio Uri"+selecteduri, Toast.LENGTH_SHORT).show();
-            }
-        }
+
 
         //  String path = audioUri.getPath(); // "file:///mnt/sdcard/FileName.mp3"
 
@@ -391,13 +486,12 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                     Toast.makeText(getContext(), "Video was not selected", Toast.LENGTH_SHORT).show();
                 } else {
                     selecteduri = data.getData();
-                    Toast.makeText(getContext(), selecteduri.toString(), Toast.LENGTH_SHORT).show();
-
                     System.out.println("VIDEOO" + selecteduri + " d " + selecteduri.getPath());
                     bottomSheetBehavior4.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
             }
             if (requestCode == REQUEST_PICK_AUDIO) {
+                selecteduri = data.getData();
                 bottomSheetBehavior3.setState(BottomSheetBehavior.STATE_EXPANDED);
                 //audioUri = data.getData();
             }

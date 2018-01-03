@@ -246,7 +246,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/editText"
+                android:layout_below="@+id/textContent"
                 android:layout_alignLeft="@+id/button_share"
                 android:layout_alignStart="@+id/button_share"
                 android:layout_alignRight="@+id/button_share"
