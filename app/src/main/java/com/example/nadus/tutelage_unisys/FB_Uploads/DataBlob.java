@@ -21,6 +21,7 @@ import com.google.firebase.storage.UploadTask;
 /**
  * Created by msuba on 12/31/2017.
  */
+/*data blob for uploading blobs*/
 
 public class DataBlob extends AppCompatActivity
 {
@@ -31,7 +32,7 @@ public class DataBlob extends AppCompatActivity
     public static ProgressDialog progressDialog;
 
 
-    public static int CreateUser(Uri filePath, DatabaseReference databaseReference, UserCreds userCreds, Context context)
+    public static void CreateUser(Uri filePath, DatabaseReference databaseReference, UserCreds userCreds,Context context)
     {
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Setting up your account...");
@@ -68,7 +69,6 @@ public class DataBlob extends AppCompatActivity
                         }
                     });
         }
-        return userCreateFlag;
 
     }
     public static void UserDetailsUpload(UserCreds userCreds,String FBpath)

@@ -10,6 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -46,6 +47,7 @@ dependencies {
     compile 'com.github.developer-shivam:Crescento:1.2.1'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:multidex:1.0.1'
     implementation 'com.android.support:percent:26.1.0'
     compile 'com.hlab.fabrevealmenu:fab-reveal-menu:1.0.3'
     compile 'me.gujun.android.taggroup:library:1.4@aar'
