@@ -101,6 +101,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     private static final int VIDEO_CAPTURE = 101;
     private static final int PICK_FILE = 5;
     StorageMetadata metadata;
+    SharedPreferences preferences;
     BottomSheetBehavior bottomSheetBehavior, bottomSheetBehavior2, bottomSheetBehavior3, bottomSheetBehavior4, bottomSheetBehavior5;
     //BottomSheetDialog bottomSheetDialog, bottomSheetDialog2, bottomSheetDialog3, bottomSheetDialog4, bottomSheetDialog5;
     FirebaseUser user;
@@ -141,7 +142,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SharedPreferences preferences = getActivity().getSharedPreferences("Tutelage", 0);
+         preferences = getActivity().getSharedPreferences("Tutelage", 0);
         univ_name = preferences.getString("univ_name","").replace(" ","");
         author = preferences.getString("mailsplit","");
         System.out.println("Unive name "+univ_name+"  "+ author);
