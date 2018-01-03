@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -229,41 +231,48 @@ public class Fragment_home_1 extends Fragment {
                     TimeZone timeZone = cal.getTimeZone();
                     int Hour = Calendar.HOUR_OF_DAY;
                     System.out.print("CURRENT HER IS "+Hour);
-                    for (int i=0;i<CurTimeTable.size();i++)
+                    try
                     {
-                        String[] period_split=CurTimeTable.get(i).split(",");
-                        System.out.println("Period Split "+period_split[0]);
-                        String next_period = period_split[0]+" @ "+period_split[1];
-                        String time1=Timing.get(Integer.parseInt(period_split[2]));
-                        // time 1 split panannum
-                        String[] hr_Array = time1.split(":");
-                        int Hr = Integer.parseInt(hr_Array[0]);
-                        System.out.println("TIMIMNG IS "+time1);
-                        if (Calendar.AM==1)
+                        for (int i=0;i<CurTimeTable.size();i++)
                         {
-                            System.out.println("ITS MRNG");
-                            if (Hr>Hour)
+                            String[] period_split=CurTimeTable.get(i).split(",");
+                            System.out.println("Period Split "+period_split[0]);
+                            String next_period = period_split[0]+" @ "+period_split[1];
+                            String time1=Timing.get(Integer.parseInt(period_split[2]));
+                            // time 1 split panannum
+                            String[] hr_Array = time1.split(":");
+                            int Hr = Integer.parseInt(hr_Array[0]);
+                            System.out.println("TIMIMNG IS "+time1);
+                            if (Calendar.AM==1)
                             {
-                                Next_Schedule = time1.split("-");
-                                nextTime.setText(Next_Schedule[0]);
-                                nextClass.setText(next_period);
-                                break;
+                                System.out.println("ITS MRNG");
+                                if (Hr>Hour)
+                                {
+                                    Next_Schedule = time1.split("-");
+                                    nextTime.setText(Next_Schedule[0]);
+                                    nextClass.setText(next_period);
+                                    break;
+                                }
                             }
-                        }
-                        else
-                        {
-                            Hour = Hour-12;
-                            System.out.println("ITS NOON");
-                            if (Hr>Hour)
+                            else
                             {
-                                Next_Schedule = time1.split("-");
-                                nextTime.setText(Next_Schedule[0]);
-                                nextClass.setText(next_period);
-                                break;
+                                Hour = Hour-12;
+                                System.out.println("ITS NOON");
+                                if (Hr>Hour)
+                                {
+                                    Next_Schedule = time1.split("-");
+                                    nextTime.setText(Next_Schedule[0]);
+                                    nextClass.setText(next_period);
+                                    break;
+                                }
                             }
-                        }
 
 
+                        }
+
+                    }catch (Exception e)
+                    {
+                        Toast.makeText(getActivity(),"Please load your timeTable",Toast.LENGTH_SHORT).show();
                     }
 
 

@@ -89,7 +89,7 @@ public class Fragment_settings_5 extends Fragment {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     firebaseAuth.signOut();
                     dialogInterface.dismiss();
-                    SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("Tutelage", 0).edit();
                     editor.clear();
                     startActivity(new Intent(getActivity(), Splash_New.class));
                 }
@@ -103,7 +103,7 @@ public class Fragment_settings_5 extends Fragment {
             dialog.show();
         });
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences("Tutelage", 0);
             univ_name = prefs.getString("univ_name", "");
             u_pass = prefs.getString("u_pass", "");
             mailsplit = prefs.getString("mailsplit","");

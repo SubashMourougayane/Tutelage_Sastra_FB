@@ -102,29 +102,6 @@
             android:orientation="horizontal"
             android:paddingBottom="5dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/roun_rect_white"
-                android:clickable="true"
-                android:text="Gotcha!"
-                android:textColor="@color/colorGray"
-                android:textSize="14dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/roun_rect_green"
-                android:clickable="true"
-                android:text="Alert Me!"
-                android:textColor="@color/colorBackroundWhite"
-                android:textSize="14dp"
-                android:textStyle="bold" />
         </LinearLayout>
     </FrameLayout>
 

@@ -52,6 +52,7 @@ public class DataBlob extends AppCompatActivity
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
                             databaseReference.setValue(userCreds);
+
                            // userCreateFlag = 1;
 //                            return Boolean.TRUE;
                         }
@@ -73,7 +74,7 @@ public class DataBlob extends AppCompatActivity
         }
 
     }
-    public static void PutBlob(Uri selecteduri, DatabaseReference databaseReference, StorageReference storageReference, String node, Blob blob, FragmentActivity activity)
+    public static void PutBlob(Uri selecteduri, DatabaseReference databaseReference, StorageReference storageReference, Blob blob, FragmentActivity activity)
     {
         progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle("Please Wait");
@@ -87,10 +88,8 @@ public class DataBlob extends AppCompatActivity
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
                             databaseReference.setValue(blob);
-                            // userCreateFlag = 1;
-//                            return Boolean.TRUE;
+                            progressDialog.dismiss();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
