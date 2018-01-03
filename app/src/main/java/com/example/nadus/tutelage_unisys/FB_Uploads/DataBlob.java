@@ -82,10 +82,7 @@ public class DataBlob extends AppCompatActivity
         progressDialog.show();
         if(selecteduri != null)
         {
-            //fb_db = new Firebase("https://tutelage-d619f.firebaseio.com/").child(FBPath);
             storage = FirebaseStorage.getInstance();
-//            DataBlob.storageReference = storage.getReference();
-//            StorageReference ref = DataBlob.storageReference.child(databaseReference+node);
             storageReference.putFile(selecteduri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

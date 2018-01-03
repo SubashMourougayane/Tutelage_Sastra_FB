@@ -201,7 +201,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 String node =  format+"@"+user.getDisplayName().replace(" ","");
                 fb_db = FirebaseDatabase.getInstance().getReference().child("Users").child(univ_name).child("Classes")
                         .child(user.getEmail().replace(".","_"))
-                        .child("Images").child("4A")
+                        .child(media).child("4A")
                         .child(format+"@"+user.getDisplayName().replace(" ",""));
                 storageReference = storageReference.child("Users")
                         .child("Classes")
