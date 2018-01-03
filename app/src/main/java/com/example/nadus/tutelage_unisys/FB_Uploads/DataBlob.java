@@ -34,7 +34,6 @@ public class DataBlob extends AppCompatActivity
     public static ProgressDialog progressDialog;
 
 
-
     public static void CreateUser(Uri filePath, DatabaseReference databaseReference, UserCreds userCreds,Context context)
     {
         progressDialog = new ProgressDialog(context);
