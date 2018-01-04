@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Fetching Timings....."
+                    android:text="Fetching Timings..."
                     android:textColor="#fff"
                     android:textSize="20dp"
                     android:textStyle="bold" />
