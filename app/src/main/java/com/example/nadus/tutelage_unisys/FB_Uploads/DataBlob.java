@@ -74,7 +74,12 @@ public class DataBlob extends AppCompatActivity
         }
 
     }
-    public static void PutBlob(Uri selecteduri, DatabaseReference databaseReference, StorageReference storageReference, Blob blob, FragmentActivity activity)
+    public static void PutBlob(String fname,
+                               String desc,
+                               String timestamp, String media,
+                               String author, Uri selecteduri,
+                               DatabaseReference fb_db,
+                               StorageReference storageReference, FragmentActivity activity)
     {
         progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle("Please Wait");
@@ -83,12 +88,18 @@ public class DataBlob extends AppCompatActivity
         progressDialog.show();
         if(selecteduri != null)
         {
-            storage = FirebaseStorage.getInstance();
+
             storageReference.putFile(selecteduri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            databaseReference.setValue(blob);
+                            Blob blob = new Blob();
+                            blob.setFname(fname);
+                            blob.setFdate(timestamp);
+                            blob.setFtype(media);
+                            blob.setFdesc(desc);
+                            blob.setFauthor(author);
+                            fb_db.setValue(blob);
                             progressDialog.dismiss();
                         }
                     })

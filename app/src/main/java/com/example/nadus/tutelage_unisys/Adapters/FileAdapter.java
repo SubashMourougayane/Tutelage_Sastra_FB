@@ -5,27 +5,57 @@ package com.example.nadus.tutelage_unisys.Adapters;
  */
 
 public class FileAdapter {
-    String fname;
-    String[] g;
+     String Fname;
+     String Ftype;
+     String Fdate;
+     String Fdesc;
+     String Fauthor;
+
+    public FileAdapter(String fname, String ftype, String fdate, String fdesc, String fauthor) {
+        Fname = fname;
+        Ftype = ftype;
+        Fdate = fdate;
+        Fdesc = fdesc;
+        Fauthor = fauthor;
+    }
 
     public String getFname() {
-        return fname;
+        return Fname;
     }
 
     public void setFname(String fname) {
-        this.fname = fname;
+        Fname = fname;
     }
 
-    public String[] getG() {
-        return g;
+    public String getFtype() {
+        return Ftype;
     }
 
-    public void setG(String[] g) {
-        this.g = g;
+    public void setFtype(String ftype) {
+        Ftype = ftype;
     }
-    public FileAdapter(String fn,String[] v)
-    {
-      this.fname=fn;
-      this.g=v;
+
+    public String getFdate() {
+        return Fdate;
+    }
+
+    public void setFdate(String fdate) {
+        Fdate = fdate;
+    }
+
+    public String getFdesc() {
+        return Fdesc;
+    }
+
+    public void setFdesc(String fdesc) {
+        Fdesc = fdesc;
+    }
+
+    public String getFauthor() {
+        return Fauthor;
+    }
+
+    public void setFauthor(String fauthor) {
+        Fauthor = fauthor;
     }
 }

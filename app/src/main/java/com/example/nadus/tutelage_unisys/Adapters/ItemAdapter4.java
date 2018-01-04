@@ -22,7 +22,7 @@ public class ItemAdapter4 extends RecyclerView.Adapter<ItemAdapter4.ViewHolder>
 {
     private int listItemLayout;
     private ArrayList<ClassAdapter> list1;
-    public MyClickListener myClickListener;
+    public static MyClickListener myClickListener;
     public ItemAdapter4(int listlayout, ArrayList<ClassAdapter> tl)
     {
         this.listItemLayout=listlayout;

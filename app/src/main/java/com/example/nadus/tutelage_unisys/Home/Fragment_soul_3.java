@@ -40,14 +40,19 @@ import android.widget.Toast;
 
 import com.example.nadus.tutelage_unisys.Adapters.ClassAdapter;
 import com.example.nadus.tutelage_unisys.Adapters.FileAdapter;
+import com.example.nadus.tutelage_unisys.Adapters.ItemAdapter4;
 import com.example.nadus.tutelage_unisys.DataModels.Blob;
+import com.example.nadus.tutelage_unisys.DataModels.MyClasses;
 import com.example.nadus.tutelage_unisys.FB_Uploads.DataBlob;
 import com.example.nadus.tutelage_unisys.R;
 import com.example.nadus.tutelage_unisys.Utils.ImageFilePath;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -85,9 +90,9 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     FloatingActionButton fab;
     Calligrapher calligrapher;
     TextView empty_text;
-    RecyclerView recyclerVie0w;
+    RecyclerView recyclerView;
     ArrayList<String> list = new ArrayList<String>();
-    String description,curClass="2A";
+    String description,curClass="2B";
     ArrayList<FileAdapter> fileAdapters=new ArrayList<>();
     ItemAdapter3 itemAdapter3;
     ImageView img2;
@@ -102,6 +107,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     private static final int VIDEO_CAPTURE = 101;
     private static final int PICK_FILE = 5;
     StorageMetadata metadata;
+    ArrayList<String> ClassNames = new ArrayList<>();
     SharedPreferences preferences;
     BottomSheetBehavior bottomSheetBehavior, bottomSheetBehavior2, bottomSheetBehavior3, bottomSheetBehavior4, bottomSheetBehavior5;
     //BottomSheetDialog bottomSheetDialog, bottomSheetDialog2, bottomSheetDialog3, bottomSheetDialog4, bottomSheetDialog5;
@@ -147,11 +153,12 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
          preferences = getActivity().getSharedPreferences("Tutelage", 0);
         univ_name = preferences.getString("univ_name","").replace(" ","");
         author = preferences.getString("mailsplit","");
-        new FetchSharedData().execute();
+        new MyClassRetreival().execute();
         System.out.println("Unive name "+univ_name+"  "+ author);
         field=(FloatingActionButton)view.findViewById(R.id.field);
         indivRecycler=(RecyclerView)view.findViewById(R.id.recyclerindiv);
         indivRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         bottomSheet=view.findViewById(R.id.b1);
         bottomSheet2=view.findViewById(R.id.b2);
         bottomSheet3=view.findViewById(R.id.b3);
@@ -187,13 +194,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         bottomSheetBehavior4.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior5.setState(BottomSheetBehavior.STATE_HIDDEN);
         storageReference = FirebaseStorage.getInstance().getReference();
-        fileAdapters.add(new FileAdapter("Dummy",new String[]{"attr1","attr2"}));
         int i=6;
-        while(i>0)
-        {
-            fileAdapters.add(new FileAdapter("FileName",new String[]{"Description","Type","Path","Size","Uploaded On"}));
-            i--;
-        }
 
         itemAdapter3=new ItemAdapter3(R.layout.classlistcard,fileAdapters);
         indivRecycler.setAdapter(itemAdapter3);
@@ -233,8 +234,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 blob.setFname(content);
                 blob.setFdesc(description);
                 blob.setFtype(media);
-                blob.setFdate(TimeStamp);
-                Blob.setFauthor(author);
+                blob.setFauthor(author);
                 fb_db = FirebaseDatabase.getInstance().getReference()
                         .child("Users").child(univ_name)
                         .child("Classes").child(curClass)
@@ -286,13 +286,7 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     {
         String TimeStamp = new SimpleDateFormat("dd-MM-yy HH:mm:ss").format(new Date());
         user = FirebaseAuth.getInstance().getCurrentUser();
-        Blob blob = new Blob();
-        blob.setFdate(TimeStamp);
-        blob.setFname(TimeStamp+"@"+user.getDisplayName().replace(" ",""));
-        blob.setFdesc(description);
-        blob.setFtype(media);
-        blob.setFdate(TimeStamp);
-        Blob.setFauthor(author);
+        String Fname = TimeStamp+"@"+user.getDisplayName().replace(" ","");
 
         fb_db = FirebaseDatabase.getInstance().getReference()
                 .child("Users").child(univ_name)
@@ -301,7 +295,8 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 .child("Users").child(univ_name)
                 .child("Classes").child(curClass).child(TimeStamp+"@"+author);
         System.out.println("final FB_DB"+fb_db);
-        DataBlob.PutBlob(selecteduri,fb_db,storageReference,blob, (FragmentActivity) getContext());
+        DataBlob.PutBlob(Fname,
+                description,TimeStamp,media,author,selecteduri,fb_db,storageReference, (FragmentActivity) getContext());
         selecteduri = null;
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.detach(this).attach(this).commit();
@@ -380,9 +375,14 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
         @Override
         public void onBindViewHolder(ViewHolder holder, int position)
         {
-            holder.mTagGroup.setTags(list1.get(position).getG());
+            String[] tags_it = {list1.get(position).getFtype(),list1.get(position).getFdate()};
+            holder.mTagGroup.setTags(tags_it);
             Typeface typeFace = Typeface.createFromAsset(getResources().getAssets(), "GlacialIndifference-Regular.ttf");
             holder.textView.setTypeface(typeFace);
+            String[] name1=list1.get(position).getFname().split("@");
+
+            holder.textView.setText(""+list1.get(position).getFdesc());
+            holder.sender.setText(""+name1[1]);
         }
 
         @Override
@@ -396,12 +396,14 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     {
 
         TagGroup mTagGroup;
-        TextView textView;
+        TextView textView,sender;
+
         public ViewHolder(View view)
         {
             super(view);
             mTagGroup = (TagGroup) view.findViewById(R.id.tag_group);
             textView=(TextView)view.findViewById(R.id.Filename);
+            sender=(TextView)view.findViewById(R.id.sender);
         }
 
     }
@@ -633,16 +635,86 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
 
 
     }
+
+    public class MyClassRetreival extends AsyncTask<String,Integer,String>
+    {
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            fb_db = FirebaseDatabase.getInstance().getReference()
+                    .child("Users").child(univ_name).child("MyTimeTable").child(author);
+            System.out.println("FB DB IS "+fb_db);
+            fb_db.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    System.out.println("GET KEY "+dataSnapshot.getKey()+" "+dataSnapshot.getChildren());
+                    for (DataSnapshot postsnapshot:dataSnapshot.getChildren())
+                    {
+                        System.out.println("GET KEY 222 "+postsnapshot.getKey());
+                        ClassNames.add(postsnapshot.getKey());
+
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            new FetchSharedData().execute();
+            super.onPostExecute(s);
+        }
+    }
     public class FetchSharedData extends AsyncTask<String,Integer,String >
     {
 
         @Override
         protected String doInBackground(String... strings) {
-//            fb_db = FirebaseDatabase.getInstance().getReference();
-//            fb_db = fb_db.child("Users").child(univ_name)
-//                    .child("Classes").child();
-                    //class and students excel load pannanum
+            fb_db = FirebaseDatabase.getInstance().getReference();
+            fb_db = fb_db.child("Users").child(univ_name)
+                    .child("Classes");
+            fb_db.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    System.out.println("datasnapshot --- > "+dataSnapshot.getKey());
+
+                        for (DataSnapshot postSnapshot:dataSnapshot.getChildren())
+                        {
+                            if (ClassNames.contains(postSnapshot.getKey()))
+                            {
+                                System.out.println("postSnapshot --- > "+postSnapshot.getKey());
+                                for (DataSnapshot postSnap:postSnapshot.getChildren())
+                                {
+                                    System.out.println("postSnap --- > "+postSnap.getKey());
+                                    Blob blob = postSnap.getValue(Blob.class);
+                                    System.out.println("FTIME "+blob.getFdate());
+                                    fileAdapters.add(new FileAdapter(blob.getFname(),blob.getFtype(),blob.getFdate(),blob.getFdesc(),blob.getFauthor()));
+                                }
+
+                            }
+
+
+                        }
+                        ItemAdapter3 itemAdapter3=new ItemAdapter3(R.layout.classlistcard,fileAdapters);
+                        indivRecycler.setAdapter(itemAdapter3);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+            //class and students excel load pannanum
             return null;
         }
     }
+
 }

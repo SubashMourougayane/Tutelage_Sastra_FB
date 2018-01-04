@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,29 +88,20 @@ public class Fragment_attendance_2 extends Fragment {
             }
         });
 
-        if(list.isEmpty())
-        {
-            recyclerView.setVisibility(View.GONE);
-            empty_text.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            recyclerView.setVisibility(View.VISIBLE);
-            empty_text.setVisibility(View.GONE);
-        }
+//
 
         return v;
     }
     @Override
     public void onResume() {
         super.onResume();
-//        it4.setOnItemClickListener(new ItemAdapter4.MyClickListener() {
-//            @Override
-//            public void onItemClick(int position, View v)
-//            {
-//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout,new Fragment_student()).addToBackStack(null).commit();
-//            }
-       // });
+        it4.setOnItemClickListener(new ItemAdapter4.MyClickListener() {
+            @Override
+            public void onItemClick(int position, View v)
+            {
+                getFragmentManager().beginTransaction().replace(R.id.frame_layout,new Fragment_student()).addToBackStack(null).commit();
+            }
+        });
     }
     public class MyClassRetreival extends AsyncTask<String,Integer,String>
     {
@@ -144,8 +136,18 @@ public class Fragment_attendance_2 extends Fragment {
                         System.out.println("LIST VALUES ARE "+list.get(i).getClassname() +" , "+ list.get(i).getSubjects() );
 
                     }
-                    it4=new ItemAdapter4(R.layout.classcard,list);
-                    recyclerView.setAdapter(it4);
+                    ItemAdapter4 itemAdapter4=new ItemAdapter4(R.layout.classcard,list);
+                    if(list.isEmpty())
+                    {
+                        recyclerView.setVisibility(View.GONE);
+                        empty_text.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        empty_text.setVisibility(View.GONE);
+                    }
+                    recyclerView.setAdapter(itemAdapter4);
 
                 }
 

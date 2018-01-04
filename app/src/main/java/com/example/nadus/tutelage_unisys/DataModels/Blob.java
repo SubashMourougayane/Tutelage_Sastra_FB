@@ -16,7 +16,7 @@ public class Blob
         return Fauthor;
     }
 
-    public static void setFauthor(String fauthor) {
+    public  void setFauthor(String fauthor) {
         Fauthor = fauthor;
     }
 
