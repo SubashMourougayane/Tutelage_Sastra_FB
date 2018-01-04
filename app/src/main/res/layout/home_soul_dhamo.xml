@@ -25,8 +25,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
                 android:clickable="true"
                 app:fabSize="normal"
                 app:srcCompat="@drawable/drag_handle" />

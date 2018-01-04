@@ -23,6 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
     NoInternetDialog noInternetDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +75,11 @@ public class HomeActivity extends AppCompatActivity {
         super.onDestroy();
         noInternetDialog.onDestroy();
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 
 
 
