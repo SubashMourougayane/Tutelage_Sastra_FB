@@ -80,6 +80,7 @@ public class Fragment_home_1 extends Fragment {
         Univ_name = preferences.getString("univ_name","");
         nextTime = (TextView)v.findViewById(R.id.nextTime);
         nextClass = (TextView)v.findViewById(R.id.nextClass);
+        nextClass.setVisibility(View.VISIBLE);
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
         Date d = new Date();
         dayOfTheWeek = sdf.format(d);
@@ -113,7 +114,8 @@ public class Fragment_home_1 extends Fragment {
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 getFragmentManager().beginTransaction().replace(R.id.frame_layout,new Fragment_home_excelupload()).addToBackStack(null).commit();
             }
         });
@@ -285,9 +287,12 @@ public class Fragment_home_1 extends Fragment {
 
                         }
 
-                    }catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Toast.makeText(getActivity(),"Please load your timeTable",Toast.LENGTH_SHORT).show();
+                        nextTime.setText("Upload Excel..!");
+                        nextClass.setVisibility(View.GONE);
                     }
 
 

@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="10:30 AM"
+                    android:text="Fetching Timings....."
                     android:textColor="#fff"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:text="Data Structures @ IV - A"
+                    android:text="Fetching Information....."
                     android:textColor="#fff"
                     android:textSize="14dp" />
             </LinearLayout>
