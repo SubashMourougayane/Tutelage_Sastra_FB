@@ -1,5 +1,7 @@
 package com.example.nadus.tutelage_unisys.Adapters;
 
+import java.util.ArrayList;
+
 /**
  * Created by HP on 11/16/2017.
  */
@@ -16,20 +18,18 @@ public class ClassAdapter {
 
     String classname;
 
-    public String[] getA()
-    {
-        return a;
+    public ClassAdapter(String classes, ArrayList<String> subs) {
+        this.classname = classes;
+        this.subjects = subs;
     }
 
-    public void setA(String[] a)
-    {
-        this.a = a;
+    ArrayList<String> subjects;
+
+    public ArrayList<String> getSubjects() {
+        return subjects;
     }
 
-    String[] a;
-    public ClassAdapter(String typename,String[] b)
-    {
-        this.classname=typename;
-        this.a=b;
+    public void setSubjects(ArrayList<String> subjects) {
+        this.subjects = subjects;
     }
 }

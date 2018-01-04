@@ -1,5 +1,6 @@
 package com.example.nadus.tutelage_unisys.Adapters;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.example.nadus.tutelage_unisys.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.gujun.android.taggroup.TagGroup;
 
@@ -36,8 +38,10 @@ public class ItemAdapter4 extends RecyclerView.Adapter<ItemAdapter4.ViewHolder>
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        holder.mTagGroup.setTags(list1.get(position).getA());
-//        Typeface typeFace = Typeface.createFromAsset(getResources().getAssets(), "GlacialIndifference-Regular.ttf");
+            String[] subjects=new String[list1.get(position).getSubjects().size()];
+        list1.get(position).getSubjects().toArray(subjects);
+        holder.mTagGroup.setTags(subjects);
+//        Typeface typeFace = Typeface.createFromAsset(getAssets(), "GlacialIndifference-Regular.ttf");
 //        holder.textView.setTypeface(typeFace);
         holder.textView.setText(list1.get(position).getClassname());
     }

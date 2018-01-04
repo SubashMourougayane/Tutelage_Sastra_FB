@@ -1,10 +1,9 @@
 package com.example.nadus.tutelage_unisys.Home;
 
-import android.inputmethodservice.Keyboard;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,10 +14,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.nadus.tutelage_unisys.Adapters.ClassAdapter;
+import com.example.nadus.tutelage_unisys.DataModels.MyClasses;
 import com.example.nadus.tutelage_unisys.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import me.anwarshahriar.calligrapher.Calligrapher;
@@ -45,8 +47,10 @@ import me.anwarshahriar.calligrapher.Calligrapher;
 
 public class Fragment_attendance_excelupload extends Fragment {
 
+    HashMap<String, ArrayList<String>> hashMap = new HashMap<String, ArrayList<String>>();
     Button confirm,upload,excel_upload;
     ListView list;
+    ArrayList<String> Nodes=new ArrayList<>();
     Calligrapher calligrapher;
     private static final String TAG = "MainActivity";
 
@@ -55,18 +59,17 @@ public class Fragment_attendance_excelupload extends Fragment {
     private File[] listFile;
     File file;
     String[] subjects;
+    SharedPreferences preferences;
 
     Button onsdCard,updir;
-
-
+    DatabaseReference fb_db;
+    String UnivName,Mail_Split;
     ArrayList<ClassAdapter> list1 = new ArrayList<ClassAdapter>();
+
 
     ArrayList<String> pathHistory;
     String lastDirectory;
     int count = 0;
-    ArrayList<String> stringArrayList = new ArrayList<>();
-
-    ArrayList<ClassAdapter> uploadData=new ArrayList<>();
 
     public static Fragment_attendance_excelupload newInstance() {
         Fragment_attendance_excelupload fragment = new Fragment_attendance_excelupload();
@@ -87,7 +90,9 @@ public class Fragment_attendance_excelupload extends Fragment {
         calligrapher = new Calligrapher(getActivity());
         calligrapher.setFont(getActivity(),"GlacialIndifference-Regular.ttf",true);
 
-
+        preferences = getActivity().getSharedPreferences("Tutelage",0);
+        UnivName = preferences.getString("univ_name","");
+        Mail_Split = preferences.getString("mailsplit","");
         updir = (Button) v.findViewById(R.id.updir);
         confirm = (Button) v.findViewById(R.id.confirm);
         upload = (Button) v.findViewById(R.id.upload);
@@ -114,7 +119,21 @@ public class Fragment_attendance_excelupload extends Fragment {
             @Override
             public void onClick(View view)
             {
-                upload.setVisibility(View.VISIBLE);
+                System.out.println("MAP IS "+hashMap);
+                for (int i=0;i<Nodes.size();i++)
+                {
+                    hashMap.get(Nodes.get(i));
+                    fb_db = FirebaseDatabase.getInstance().getReference()
+                        .child("Users").child(UnivName).child("MyTimeTable")
+                        .child(Mail_Split).child(Nodes.get(i));
+                    MyClasses myClasses=new MyClasses();
+                    myClasses.setSubjlist(hashMap.get(Nodes.get(i)));
+                    fb_db.setValue(myClasses);
+                }
+//                fb_db = FirebaseDatabase.getInstance().getReference()
+//                        .child("USers").child(UnivName).child("MyTimeTable")
+//                        .child(Mail_Split);
+//                fb_db.setValue(myTimeTables);
             }
         });
         updir.setOnClickListener(new View.OnClickListener() {
@@ -188,9 +207,12 @@ public class Fragment_attendance_excelupload extends Fragment {
                         int column = sheet.getRow(0).getLastCellNum();
                         Cell cell1;
                         System.out.println("ColumnSize=" + column);
-                        for (int colIndex = 0; colIndex < column; colIndex++) {
+                        for (int colIndex = 0; colIndex < column; colIndex++)
+                        {
+                            ArrayList<String> stringArrayList = new ArrayList<>();
                             String s = String.valueOf(sheet.getRow(0).getCell(colIndex));
-                            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+                            for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++)
+                            {
                                 row = sheet.getRow(rowIndex);
 
                                 if (row != null) {
@@ -209,18 +231,20 @@ public class Fragment_attendance_excelupload extends Fragment {
                                 }
 
                             }
+                            Nodes.add(s);
                             Log.d(TAG, "STRING LIST=" + stringArrayList.size());
                             Log.d(TAG, "FIRST CELL VALUE=" + s);
-                            subjects = new String[stringArrayList.size()];
-                            stringArrayList.toArray(subjects);
-                            list1.add(new ClassAdapter(s, subjects));
+                            Log.d(TAG,"Subjects="+stringArrayList);
+                            hashMap.put(s,stringArrayList);
+
+
+
 
                         }
-                        for (String s : stringArrayList) {
-                            System.out.println("values :" + s);
-                        }
-                        System.out.println("ClassAdapter_Size=" + list1.size());
-                        System.out.println("ClassAdapter_Value" + list1.get(1).getA().toString());
+
+
+//                        System.out.println("Timetable" + myTimeTables.size());
+                        //System.out.println("ClassAdapter_Value" + list1.get(1).getA().toString());
                         Iterator<ClassAdapter> iterator = list1.iterator();
 
 
@@ -364,6 +388,4 @@ public class Fragment_attendance_excelupload extends Fragment {
         }
     }
 
-
-//
 }

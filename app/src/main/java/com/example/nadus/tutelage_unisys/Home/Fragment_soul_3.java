@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -140,11 +141,13 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
          preferences = getActivity().getSharedPreferences("Tutelage", 0);
         univ_name = preferences.getString("univ_name","").replace(" ","");
         author = preferences.getString("mailsplit","");
+        new FetchSharedData().execute();
         System.out.println("Unive name "+univ_name+"  "+ author);
         field=(FloatingActionButton)view.findViewById(R.id.field);
         indivRecycler=(RecyclerView)view.findViewById(R.id.recyclerindiv);
@@ -629,5 +632,17 @@ public class Fragment_soul_3 extends BaseFragment implements OnFABMenuSelectedLi
                 PICK_FILE);
 
 
+    }
+    public class FetchSharedData extends AsyncTask<String,Integer,String >
+    {
+
+        @Override
+        protected String doInBackground(String... strings) {
+//            fb_db = FirebaseDatabase.getInstance().getReference();
+//            fb_db = fb_db.child("Users").child(univ_name)
+//                    .child("Classes").child();
+                    //class and students excel load pannanum
+            return null;
+        }
     }
 }
